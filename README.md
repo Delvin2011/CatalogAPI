@@ -11,7 +11,7 @@ Running a REST API as container instanse deployed on Azure.
 - <b>InMemory Caching</b>
 - <b>API Authentication with JWT</b>
 - <b>Dockerize the REST API</b>
-- <b>Spinning up a SQL instance on Docker & connect to it to the REST API</b>
+- <b>Spinning up a SQL instance with Docker & connect to it to the REST API</b>
 - <b>Provisioning the API & SQL instances on Azure</b>
 - <b>Deploy Container Instances of the API and the SQL</b>
 - <b>Run the services as containers</b>
