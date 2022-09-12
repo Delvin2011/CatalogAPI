@@ -4,7 +4,7 @@ services:
     image: justin2004/mssql_server_tiny
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Delvin2011"
+      SA_PASSWORD: "xxxxxxx"
     ports:
       - "1433:1433"
   catalog-api:

@@ -1,7 +1,0 @@
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\Catalog.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\Catalog.AssemblyInfoInputs.cache
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\Catalog.AssemblyInfo.cs
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\Catalog.csproj.CoreCompileInputs.cache
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\Catalog.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\Catalog.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Takudzwa\Documents\Learning\C#Learning\NewLearnings\Catalog\obj\Release\net5.0\EFCoreSqlServerNetTopologySuite.cs

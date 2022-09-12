@@ -1,8 +1,0 @@
-2022-04-19 17:45:17.4672 INFO Entering the login controller: Login Method
-2022-04-19 17:45:22.9494 INFO Login failed: Invalid password for user Tkay@gmail.com
-2022-04-19 17:45:33.2042 INFO Entering the login controller: Login Method
-2022-04-19 17:45:33.8124 INFO User Tkay@gmail.com: Succesfully logged in
-2022-04-19 23:19:32.3086 INFO Entering the login controller: Login Method
-2022-04-19 23:19:34.2665 INFO Login failed: User takutapfu@gmail.com does not exist
-2022-04-19 23:20:11.3892 INFO Entering the login controller: Login Method
-2022-04-19 23:20:11.7473 INFO User Tkay@gmail.com: Succesfully logged in
