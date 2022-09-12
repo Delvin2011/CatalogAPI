@@ -1,0 +1,14 @@
+2022-04-10 20:03:40.9400 INFO Entering the login controller: Login Method
+2022-04-10 20:03:43.3659 INFO Login failed: User user@example.com does not exist
+2022-04-10 20:13:10.5869 INFO Entering the login controller: Login Method
+2022-04-10 20:13:12.3635 INFO Login failed: User user@example.com does not exist
+2022-04-10 20:14:25.3643 INFO Entering the login controller: Login Method
+2022-04-10 20:14:25.5947 INFO Login failed: Invalid password for user Tkay@gmail.com
+2022-04-10 20:14:37.4656 INFO Entering the login controller: Login Method
+2022-04-10 20:14:37.8733 INFO User Tkay@gmail.com: Succesfully logged in
+2022-04-10 21:36:51.4493 INFO Entering the login controller: Login Method
+2022-04-10 21:36:53.4835 INFO Login failed: User user@example.com does not exist
+2022-04-10 21:37:30.6584 INFO Entering the login controller: Login Method
+2022-04-10 21:37:31.0657 INFO User Tkay@gmail.com: Succesfully logged in
+2022-04-10 23:47:31.1476 INFO Entering the login controller: Login Method
+2022-04-10 23:47:36.2705 INFO User Tkay@gmail.com: Succesfully logged in

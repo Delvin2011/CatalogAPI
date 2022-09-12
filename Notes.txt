@@ -1,0 +1,294 @@
+1. Getting Started
+	Create new Project
+	-dotnet new webapi -n Catalog
+
+	csproj file
+
+	Program.cs
+	-is the entry point of the project
+	-declares a bunch of defaults
+
+	Startup.cs
+	-IConfiguration Configuration - read configurations of multiply sources.
+	-public void ConfigureServices(IServiceCollection services) - register all the services to be used in the app.
+	-public void Configure(IApplicationBuilder app, IWebHostEnvironment env) - configure the request pipeline.
+	-configure middleware - additional components that will execute before the controller.
+
+	Controller
+	-the class that handles the routes that the service exposes
+
+	Trust certificate that comes budled with dotnet SDK
+	-dotnet dev-certs https --trust
+
+2. Entity, Repository, Controller, GET
+Record Types in C#9 and .Net5 (Domain-Item) - better support doe immutable data model.
+-Use for immutable objetcs (objects that can't be modified)-once you get an instance of an object its not possible to modify
+-With-expression support
+-Value based equality support (if you compare 2 items of the same instance, they will only be equal if all the properties are the same,  as opposed to the identy of the properties as with classes)
+
+Repository
+-Class responsible for storing items in the system.
+-To keep things simple, we will use in memory repository then later bring database.
+-IEnumerable - interface used to return a collection of items
+
+Controllers
+-Always want to inherit from controller base
+-Effectively turns your class into a controller class. import controllerbase from using Microsoft.AspNetCore.Mvc; 
+-mark the class as API controller - brings a bit of defaults for controller to behave like API
+-declare the route - to which http request the controller is going to be responding.
+-bring an instance of the repository
+-class that receives the requests, sent by the client and handles if properlly.
+	Constructo
+	-for any action we are going to do nned the repository, so we bring an instance of that.
+	-ActionResult - allows us to return, more that one type. In this case where the Item does not exist, we would want to view the appropriate status code. e.f 404
+
+3. Dependency Injection (DTOs)
+-In this section, we learn Dependency Injection. Insert a repository into our controller.
+-DTOs, data transfer objetcs.
+-Instead of ItemsController, construct an instance of the repository, rater receive the repository in  the contrsuctor and take that reference into the class.
+- Dependency Inversion Principle, one class won't have to directly depend on another class, but rather depend on an interface(abstruction).
+How to construct the dependencies?
+-On startup, the IService Provider(Service Container) registers all the class dependances. The service container, construct once on start up (values won't change) also depending on the lifecycle of the App. Eventually when the class is instanciated, the service container resolves the dependencies needed by the class.
+-Decoupling implementation from contract details
+To extraxt Interface
+-Go to the repository, clisk on the class. A brush appears on the left side, click and Extract Interface appeares.
+-Resultingly, the repository implements the interface and the controller class, depends on the interface. (So the repository is injected into the class via the interrface.)
+-You must then register the repository/services Startup.cs
+-services.AddSingleton - One copy of the instance of a type across the entire lifetime of the service. One will be created and used whenever needed.
+DTOs
+-actual contract to be implemented between the client and our service
+-The endpoints are exposing our item entity
+-We have to understand that when we create REST API, we are creating a contract, that we should not be breaking easily.
+-In the events we want to change any of the fields, we can potentially break our client's contract. Which is a no go when building REST services.
+-DTO is theen the actual contract that we will create between the client and our service.
+-In this case the Item we are returning is pretty much the item we are storing or retreiving in our repository
+-Can use extensions,
+
+Instead of doing it manually, can use Automapper (get from nugate packages)
+
+4. CRUD operations
+-To create a new endpoint, start by creating the interface class.
+-then create the endpoint/route in the controller. Don't forget the contract, DTOs
+-the Dto, doesn't necessarily have to be the same as the item class. T=Create only the necessary fields.
+-Data Annotations
+	-In the event you post and object with missing elements. For instance name missing resulting in a null entry.
+	-You then use data annotations, e.g. [Required]
+	-also [Range(1,1000)], for specifying the price range. or "The field Price must be between 1 and 1000." if the field value is negative or more than 1000
+	-returnd error  "The Name field is required."
+
+	https://www.youtube.com/watch?v=fmvcAzHpsk8&t=3994s
+5. Data Access
+-Acts a mediator between our physical data base and our models, and in fact the rest of our application.
+-The controller talks directly to the data access via repository.
+-To create special security for the app
+	Security
+		Logins(right click)
+		Set the user name and password.
+	Ensure you have the plugins for the Entity Framework (https://www.nuget.org/)
+		-Microsoft Entity FrameworkCore via Tool -> Mana Nugert packages etc
+
+		-
+-Create Db context class
+	-check changes done to CatalogContext.
+Migrations - list of instructions given to a database to recreate/create a database schema
+-internal represantaion of the data within our application. Migrations will replicate our dbset (Catalog Context) onto the sql server.
+-you can also roll back migration.
+-add-migration InitialMigration
+-generates steps that are going to be implemented in creating the table in the sqlserver
+	-up - will create stuff
+	-down - will delete stuff
+-in the event you have created a migration file and the model isn't quite right, use remove-migration to delete all the migrations files. And resolve the model
+- run Update-Database to create/Update the database. 
+-EF commands (https://www.entityframeworktutorial.net/efcore/entity-framework-core-migration.aspx)
+
+Create a Sql implementation of our ItemsRepo.
+
+Summary
+DB Context class to access our data from the SQL server using entity framework core.
+Setup our sql repository & implementation to use the dbContext.
+
+Mapping
+-Create Mapping folder, and also create mapping file for each domain object (Item).
+-use ctor & double tab for creating constructor
+
+
+JWT (https://www.youtube.com/watch?v=LgpC4tYtc6Y)
+-Add packages
+-Authentication.jwtBearer
+-Indentity.EntityFrameworkCore
+-AspNetCore.Identity.UI
+
+-Configure the JWT in app.config (secretes, that will be encrypting our jwt tokens before being sent back to the client).
+-Has to be 32 characcters. Use random string generator (https://www.browserling.com/tools/random-string)
+
+Go to API dbcontext and do some updates in order to use identity
+-Change DbContext to IdentityContext - since we are using ASP Core Dotnet Identity, the identity must have certain tables existing in the tables. 
+-Inheriting from IdentityContext, will give us such functionality for handling roles, identity, authentication etc
+-To add the tables, we need to add certain migrations
+1. add-migration IdentityAuthentication
+2. Update-Database
+
+JwtSecurityJwtTOken is responsible for generting the tokens.
+Descriptor is a class that contains claims. Claims contains info we define within our jwt in order for us to read certain variables within it. E.g email, password, username etc.
+
+
+Authorisation to have access to the items, only for the registered users.
+-Add the Authorize attribute (Item Controlle) [Authorize]
+-Specify which schema to authenticate. Specify jwt, bearer schema [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+
+Unit Testing https://www.youtube.com/watch?v=AW7ZcMOtwC8
+-Unit tests help to fix bugs early in the development cycle and save costs.
+-Test an Isolated piece of code.
+-Saves time by Automation
+-Microsoft.NET.Test.Sdk, xunit, xunit.runner.visualstudio, coverlet.collctor
+
+Create Test library
+dotnet new xunit -n "Catalog.Test"
+
+
+
+Logging (https://www.youtube.com/watch?v=PnlxRmHg0lU)
+-Nuget packages (Nlog, Nlog.Config,Nlog.Schema)
+- signleton pattern example. So that the logger can be instantiated once within the programm.
+
+Caching
+Microsoft.Extension.Caching.Memory
+-improves perfomance and scalability. 
+-save a copy of the data in the temp memory, incase it gets requested the second time, it will be readly available.
+-services.AddMemoryCache(); inside startup.cs
+-first parameter of TryGetValue, is the key, of the memory cache. TryGetValue reads and assigns to variable (out parameter)
+
+Docker Compose with .NET Core & SQL Server (Step by Step)
+Deploy a .NET Core API with Docker (Step-by-Step)
+
+Docker
+- Containerization platform - packages & run apps as containers.
+- enables you to package your applications into images & run them as containers on any platform that runs Docker.
+- Use case, run a project you have developed & when deployed to other platforms e.g. it doesn't work due to dependencies missing etc
+- with docker, u can package the project into an image and once deployed, can most certainly run
+- easy transferability & deployment
+- images are built in layers
+
+Steps
+Dockerfile -> Docker Engine -> Image
+- https://docs.docker.com/samples/dotnetcore/ - Dockerize an ASP.NET Core application
+- Images
+A docker image is a file that contains the �blueprint� or instructions on how our code is expected to run in Docker, so it includes things like dependencies and instructions on how our app should start.
+- Container
+When our image is �executed to run�, in runs in a container, which as we�ve already discussed is highly portable and independent, (from any other running containers).
+- Docker Commands
+	- docker --version
+	- docker build -t tkaydelvin/catalog . (docker build -t <your docker hub id>/catalog .) . is the build context
+	- docker run -p 8080:80 -d tkaydelvin/catalog run the image as a container
+	- docker ps - This will show all the currently running containers.
+	- docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Delvin2011' -e 'MSSQL_PID=Express' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest (spin up sql sontainer instance - giving memory issues)
+	- docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Delvin2011' -p 1433:1433 -d justin2004/mssql_server_tiny (test out using sql server - connect to localhost,1433 -> Delvin2011)
+	- docker stop containerID(get from docker ps)
+	- docker compose up - Builds, (re)creates, starts, and attaches to containers for a service.
+	- docker push tkaydelvin/catalog - Push to docker  hub
+
+- Blogs
+	- https://dotnetplaybook.com/run-and-connect-to-a-sql-server-docker-container/
+	- https://dotnetplaybook.com/deploy-a-net-core-api-with-docker/
+
+- Video
+	- https://www.youtube.com/watch?v=wQSuZFd01tY
+
+- Dockerfile (scripting instructions how the environment should run)
+	- Operating System
+	- .Net/Asp.Net Core Runtime
+	- Dependencies
+	- Where to place the files
+	- Where to start the REST API
+	- Creates the Docker image
+
+- Container Registry
+	- Place where you can push your Docker image, so that it eventually becomes available in the production environment
+		- Docker hub
+		- Azure container registry
+		- AWS
+
+Production server, box
+- Pulls the image from the container registry
+- Executing the image, turns the image into the container.
+- Container becomes the executable running version of the docker image
+- Can spin up more & more containers, depending on demand without hussles of provisioning a new instance of the API
+- Less resource intensive when spinning up, as docker caches the layers. So no need to put up an entire new system to provision a new instance nence fast start.
+- Each container will run in isolation
+
+We will need to make sure the REST Api container will be able to talk to the sql container.
+Steps
+ - Have a docker network and have both containers to join the network
+ - Which means spinning up a sql instance on docker & connect to it to the appliction
+ - Check PrepDb inside Domain - Runs our migration files automatically
+
+ - Methods od Networking Containers
+	- Software defined networks
+	- Use Docker Compose (yml file, for scripting)
+		- Reduces reliance on, and simplifies use of Dommand Command Line
+		- Allows us to start up multiple containers quickly
+		- Allows us to set up connections between containers
+
+
+
+
+
+
+
+
+
+ https://www.youtube.com/watch?v=4V7CwC_4oss&t=1s
+
+
+     //"CatalogConnection": "Server=localhost;Initial Catalog=CatalogDB;User ID=CatalogAPI;Password=Delvin2011;",
+    //use the name of the service of the sql instance
+
+
+	Kubernetes https://www.youtube.com/watch?v=OTYlUGUy23Y&t=2005s
+	- Docker compose is also an option, but in developement type of environments
+	- 
+	- Container orchestrator
+	- Making sure things run in the same way and 
+	- Easy scaling
+	Architacture
+		-	Hardaware -> Windows 10 OS-> Docker (Container Runtime) -> Kubernetes 
+		{
+			Cluster 
+			{
+				Node -> Node port (used in development context & not in production)
+				{
+					POD (Platform service container) - can run multiple container
+					POD (Command service container)
+					- The PODS will communicate to each other using the Cluster IP
+					POD (Ingress Nginx (Load balancer) Container) - API Gateway for the 2 services
+				}
+			}
+		}
+
+
+
+
+
+
+	Key points
+	- Why a container orchestrator is needed
+		- Node (REST API containers, SQL server container)
+		- Take care of pulling & running containers
+		- Run containers
+		- Spin up containers
+		- Check the health of the containers
+		- Communication between containers
+		- Decide which container to server the public Ip request
+		- Use the Control Plane (decide the above decisions)
+		- Control Plane -> Deploy (Find images in the container registry & allocates a POD for the container we are pulling in) -> Nodes
+		- PODs the smallest deployable unit of computing that you can create & manage inside Kubernetes -> one or more contaieners sharing resources
+		- POD also declares how to run containers inside them
+	- What is Kubernetes and which are its basic components
+
+
+	Deployment
+	- Push to docker hub
+
+	http://catalogapicontainer.a5fdf5fzh7h4d0g4.westus.azurecontainer.io/swagger/index.html
+

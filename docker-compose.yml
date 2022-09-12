@@ -1,0 +1,13 @@
+﻿version: "3"
+services:
+  ms-sql-server:
+    image: justin2004/mssql_server_tiny
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Delvin2011"
+    ports:
+      - "1433:1433"
+  catalog-api:
+    build: .
+    ports:
+      - "8080:80"
